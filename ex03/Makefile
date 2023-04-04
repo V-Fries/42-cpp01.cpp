@@ -4,7 +4,10 @@ NAME =	unnecessaryViolence
 SRC_PATH =	./
 
 SRC =\
-	main.cpp
+	HumanA.cpp	\
+	HumanB.cpp	\
+	main.cpp	\
+	Weapon.cpp
 
 
 DIR_INCS =\
