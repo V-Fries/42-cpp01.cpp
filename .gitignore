@@ -1,0 +1,19 @@
+# binaries
+# ex00
+braiiiiiiinnnzzzZ
+# ex01
+moarBrainz
+# ex02
+hiThisIsBrain
+# ex03
+unnecessaryViolence
+
+# build
+*.o
+*.d
+
+# IDE
+.idea
+.vscode
+CMakeLists.txt
+cmake-build-debug
