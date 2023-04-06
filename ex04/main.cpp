@@ -3,6 +3,10 @@
 #include <cstdlib>
 #include <cstring>
 
+static int createInputFile(std::ifstream& inFile, char *inFileName);
+static int createOutputFile(std::ofstream& outFile, char *inFileName);
+static void writeToOutput(std::ifstream& inFile, std::ofstream& outFile,
+						  char **argv);
 static void printModifedLine(std::string& input, char **argv, size_t argv2Len,
 							 std::ofstream& outFile);
 
@@ -13,21 +17,39 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	std::ifstream inFile(argv[1]);
+	std::ifstream inFile;
+	if (createInputFile(inFile, argv[1]) == EXIT_FAILURE)
+		return EXIT_FAILURE;
+	std::ofstream outFile;
+	if (createOutputFile(outFile, argv[1]) == EXIT_FAILURE)
+		return EXIT_FAILURE;
+
+	writeToOutput(inFile, outFile, argv);
+}
+
+static int createInputFile(std::ifstream& inFile, char *inFileName) {
+	inFile.open(inFileName);
 	if (!inFile) {
-		std::cerr << "Failed to open " << argv[1] << ": " << strerror(errno)
+		std::cerr << "Failed to open " << inFileName << ": " << strerror(errno)
 				  << std::endl;
 		return EXIT_FAILURE;
 	}
+	return EXIT_SUCCESS;
+}
 
-	std::string outFileName = std::string(argv[1]).append(".replace");
-	std::ofstream outFile(outFileName.c_str());
+static int createOutputFile(std::ofstream& outFile, char *inFileName) {
+	std::string outFileName = std::string(inFileName).append(".replace");
+	outFile.open(outFileName.c_str());
 	if (!outFile) {
 		std::cerr << "Failed to open " << outFileName << ": " << strerror(errno)
 				  << std::endl;
 		return EXIT_FAILURE;
 	}
+	return EXIT_SUCCESS;
+}
 
+static void writeToOutput(std::ifstream& inFile, std::ofstream& outFile,
+						  char **argv) {
 	std::size_t argv2Len = std::strlen(argv[2]);
 	std::string input;
 	while (std::getline(inFile, input)) {
@@ -35,8 +57,6 @@ int main(int argc, char **argv) {
 		if (!inFile.eof())
 			outFile << std::endl;
 	}
-	if (inFile.fail())
-		std::cerr << "std::getline() failed" << std::endl;
 }
 
 static void printModifedLine(std::string& input, char **argv, size_t argv2Len,
